@@ -12,7 +12,7 @@ export class VarParser {
      * MYVAR3: 'some value'
      * @returns a parsed environment variable info object
      */
-    public static parseVars(varLines: string[]): IEnvVarInfo[]|undefined {
+    public parseVars(varLines: string[]): IEnvVarInfo[] {
         return (varLines || []).map(vl => VarParser.parseVarLine(vl))
             .filter(v => !!v)
             .map(v => v as IEnvVarInfo);
@@ -37,22 +37,7 @@ export class VarParser {
         }
         // line has a colon and a value. value may be wrapped in single or double quotes
         else {
-            return { Name: name, Value: value /* VarParser.trimQuotes(value) */ }
+            return { Name: name, Value: value }
         }
-    }
-
-    /**
-     * Trims paired single and double quotes from the start and end of the input string.
-     * Ex: `"test" => test`; `'test' => test`; `'test => 'test`; `"test => "test`
-     * @param str string to trim quotes from
-     * @returns string without hugging quotes
-     */
-    private static trimQuotes(str: string): string {
-        const trimWrapRegex = (sep: string) => new RegExp(`${sep}([^${sep}]+(?=${sep}))${sep}`, "g");
-        
-        // trim double- and single-quotes (" and ') from start and end
-        return str
-            .replace(trimWrapRegex(`"`), "$1")
-            .replace(trimWrapRegex("'"), "$1");
     }
 }

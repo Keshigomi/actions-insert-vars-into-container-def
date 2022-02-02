@@ -10,7 +10,7 @@ describe("VarParser", () => {
             DB_URI: "db_uri"`;
 
         // act
-        const result = VarParser.parseVars(testInput.split("\n"));
+        const result = new VarParser().parseVars(testInput.split("\n"));
 
         // assert
         expect(result).not.toBeUndefined();
@@ -28,7 +28,7 @@ describe("VarParser", () => {
     ])
     (".parseVars_withQuotedAndUnquotedValue_getsCorrectNameAndValue", (varLine: string, expectedValue: string) => {
         // act
-        const result = VarParser.parseVars([varLine]);
+        const result = new VarParser().parseVars([varLine]);
 
         // assert
         expect(result).not.toBeUndefined();
@@ -43,7 +43,7 @@ describe("VarParser", () => {
     ])
     (".parseVars_withValueWithColon_getsCorrectNameAndValue", (varLine: string, expectedValue: string) => {
         // act
-        const result = VarParser.parseVars([varLine]);
+        const result = new VarParser().parseVars([varLine]);
 
         // assert
         expect(result).not.toBeUndefined();
@@ -54,7 +54,7 @@ describe("VarParser", () => {
 
     it(".parseVars_withNoValue_usesUndefinedValue", (done: Function) => {
         // act
-        const result = VarParser.parseVars(["myvar:"]);
+        const result = new VarParser().parseVars(["myvar:"]);
 
         // assert
         expect(result).not.toBeUndefined();
@@ -67,7 +67,7 @@ describe("VarParser", () => {
 
     it(".parseVars_withCommentLines_parsesVarsButIgnoresComments", (done: Function) => {
         // act
-        const result = VarParser.parseVars(["// comment 1", "myvar: myval", "# comment 2"]);
+        const result = new VarParser().parseVars(["// comment 1", "myvar: myval", "# comment 2"]);
 
         // assert
         expect(result).not.toBeUndefined();

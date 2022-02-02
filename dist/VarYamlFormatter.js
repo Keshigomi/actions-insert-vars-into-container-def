@@ -2,17 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VarYamlFormatter = void 0;
 class VarYamlFormatter {
-    constructor(newLineSeparator = "\n", indent = 12) {
-        this.indent = " ".repeat(indent);
+    constructor(envVarConverter, newLineSeparator = "\n") {
+        this.envVarConverter = envVarConverter;
         this.newLineSeparator = newLineSeparator;
     }
-    format(vars) {
+    format(vars, indentSize = 12) {
         vars = vars || [];
-        return vars.map(v => this.varToString(v)).join(this.newLineSeparator);
-    }
-    varToString(v) {
-        return `${this.indent}- Name: ${v.Name}${this.newLineSeparator}` +
-            `${this.indent}  Value: ${v.Value || null}`;
+        const indent = " ".repeat(indentSize);
+        return vars.map(v => this.envVarConverter.varToString(v, indent)).join(this.newLineSeparator);
     }
 }
 exports.VarYamlFormatter = VarYamlFormatter;

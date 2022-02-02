@@ -1,20 +1,17 @@
+import { IEnvVarConverter } from "./IEnvVarConverter";
 import { IEnvVarInfo } from "./IEnvVarInfo";
 
 export class VarYamlFormatter {
-    private readonly indent: string;
+    private readonly envVarConverter: IEnvVarConverter;
     private readonly newLineSeparator: string;
 
-    public constructor(newLineSeparator: string = "\n", indent: number = 12) {
-        this.indent = " ".repeat(indent);
+    public constructor(envVarConverter: IEnvVarConverter, newLineSeparator: string = "\n") {
+        this.envVarConverter = envVarConverter;
         this.newLineSeparator = newLineSeparator;
     }
-    public format(vars: IEnvVarInfo[] | undefined) {
+    public format(vars: IEnvVarInfo[] | undefined, indentSize: number = 12) {
         vars = vars || [];
-        return vars.map(v => this.varToString(v)).join(this.newLineSeparator);
-    }
-
-    private varToString(v: IEnvVarInfo) {
-        return `${this.indent}- Name: ${v.Name}${this.newLineSeparator}` +
-               `${this.indent}  Value: ${v.Value || null}`
+        const indent = " ".repeat(indentSize);
+        return vars.map(v => this.envVarConverter.varToString(v, indent)).join(this.newLineSeparator);
     }
 }

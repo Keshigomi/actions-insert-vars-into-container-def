@@ -1,7 +1,7 @@
-# actions-insert-vars-into-container-def
+# actions-insert-vars-into-yaml
 
 ## Summary
-Inserts a set of variables into a YAML file using the Name/Value format. The changes are done in-place. To replace multiple placeholders,
+Inserts a set of variables into a YAML file using the Name/Value or Object format. The changes are done in-place. To replace different placeholders,
 multiple runs of this action can be used on the same file.
 
 ## Use the action like this:
@@ -70,3 +70,4 @@ indent size is `auto`. To override this behavior, set the `indentSize` to a spec
 | varSeparator (optional) | The separator to use when reading the `file` and writing the `vars`. Default is `\n`. |
 | indentSize | `auto`, or a number that represents the size of indent to use for each line of inserted text. Default is `auto`, which uses the same indent as the indent of the placeholder on that line in the `file` |
 | vars | The list of variables to insert, one per line. Each variable should be in the format `VAR_NAME: VALUE`. Quotations around the value are preserved, so single or double quotes are ok. If no value is provided, the variable is set to `null`. Each variable is written in the 2-line format like in the example above.
+| outputFormat (optional) | Can be either NameValuePair or Object. Formats the variables as Name: Value if format is Object. |

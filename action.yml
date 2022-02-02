@@ -24,6 +24,8 @@ inputs:
     description: 'Encoding to use to read and write the file. Default is `utf-8`'
     required: false
     default: 'utf-8'
+  outputFormat:
+    description: 'Output format to generate. Can be `NameValuePair` or `Object`'
 runs:
   using: 'node12'
   main: 'dist/index.js'

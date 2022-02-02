@@ -8,7 +8,7 @@ jest.mock("@actions/core", () => ({
 import { FileHandle } from "fs/promises";
 import { Stream } from "stream";
 
-import { FileProcessor } from "../src/FileProcessor";
+import { BetterFileProcessor } from "../src/BetterFileProcessor";
 import { PathLike } from "fs";
 import * as fs from "fs";
 
@@ -30,11 +30,6 @@ describe("run", () => {
         const testValue1 = '"testValue1"';
         const testVar2 = '"testVar2"';
         const testValue2 = "testValue2";
-        const inputs: IInputs = {
-            ["file"]: "a file path",
-            ["vars"]: [`${testVar1}: ${testValue1}`, `${testVar2}: ${testValue2}`, "// comment"].join("\n")
-        };
-        mockCoreInputs(inputs);
 
         mockReadFile(`
             Resources:
@@ -47,7 +42,10 @@ describe("run", () => {
         mockWriteFile((contents) => result = contents);
         
         // act
-        await new FileProcessor().process();
+        await new BetterFileProcessor().process({
+            filePath: "a file path",
+            vars: [`${testVar1}: ${testValue1}`, `${testVar2}: ${testValue2}`, "// comment"]
+        });
 
         // assert
         expect(result).not.toBeUndefined();
@@ -63,12 +61,6 @@ describe("run", () => {
     ])
     ("withNoVars_setsEnvironmentBlockToEmpty", async (varsValue) => {
         // arrange
-        const inputs: IInputs = {
-            ["file"]: "a file path",
-            ["vars"]: varsValue
-        };
-        mockCoreInputs(inputs);
-
         mockReadFile(`
             Resources:
               TaskDefinition:
@@ -80,7 +72,10 @@ describe("run", () => {
         mockWriteFile((contents) => result = contents);
 
         // act
-        await new FileProcessor().process();
+        await new BetterFileProcessor().process({
+            filePath: "a file path",
+            vars: varsValue
+        });
 
         // assert
         expect(result).not.toBeUndefined();
@@ -89,15 +84,13 @@ describe("run", () => {
 
     it("withMissingFileInput_failsAction", async () => {
         // arrange
-        const inputs: IInputs = {
-            ["file"]: undefined,
-        };
-        mockCoreInputs(inputs);
         let error = undefined;
         (core.setFailed as jest.MockedFunction<any>).mockImplementation((message: string) => error = message);
 
         // act
-        await new FileProcessor().process();
+        await new BetterFileProcessor().process({
+            filePath: undefined!
+        });
 
         // assert
         expect(error).not.toBeUndefined();
@@ -105,16 +98,6 @@ describe("run", () => {
     });
 });
 
-interface IInputs {
-    [key: string]: string|undefined
-}
-
-function mockCoreInputs(inputs: { [key: string]: string | undefined }) {
-    (core.getInput as jest.MockedFunction<any>)
-        .mockImplementation((name: string) => inputs[name]);
-    (core.getMultilineInput as jest.MockedFunction<any>)
-        .mockImplementation((name: string) => inputs[name]?.split("\n"));
-}
 
 function mockWriteFile(callback: (contents: string) => void) {
     (fs.promises.writeFile as jest.MockedFunction<any>).mockImplementation(
