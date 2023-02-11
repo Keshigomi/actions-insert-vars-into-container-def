@@ -27,5 +27,5 @@ inputs:
   outputFormat:
     description: 'Output format to generate. Can be `NameValuePair` or `Object`'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
